@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.kftech.prolo</groupId>
+    <artifactId>prolo-codegen</artifactId>
+    <packaging>jar</packaging>
+    <version>0.5.0</version>
+
+    <name>prolo-codegen</name>
+    <description>prolo code generator</description>
+
+    <parent>
+        <groupId>org.kftech.prolo</groupId>
+        <artifactId>prolo-parent</artifactId>
+        <version>0.5.0</version>
+    </parent>
+
+    <properties>
+        <prolo.test.source.dir>${project.build.directory}/generated-test-sources/proloc</prolo.test.source.dir>
+        <descriptor.set.path>${project.build.directory}/generated-test-resources/protobuf/descriptor-sets</descriptor.set.path>
+        <descriptor.set.file.name>descriptorset.protobin</descriptor.set.file.name>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kftech.prolo</groupId>
+            <artifactId>prolo-core</artifactId>
+            <version>0.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+        </dependency>
+
+        <dependency>
+        	<groupId>org.antlr</groupId>
+        	<artifactId>ST4</artifactId>
+        	<version>4.0.4</version>
+            <!-- Why does ST4 depend on ST3??? -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.antlr</groupId>
+                    <artifactId>stringtemplate</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>args4j</groupId>
+            <artifactId>args4j</artifactId>
+            <version>2.0.16</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.google.protobuf.tools</groupId>
+                <artifactId>maven-protoc-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <writeDescriptorSet>true</writeDescriptorSet>
+                            <descriptorSetFileName>${descriptor.set.file.name}</descriptorSetFileName>
+                            <includeDependenciesInDescriptorSet>true</includeDependenciesInDescriptorSet>
+                        </configuration>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>clean-prolo-test-sources</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <delete dir="${prolo.test.source.dir}" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-prolo-test-sources</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>org.kftech.prolo.codegen.Proloc</mainClass>
+                    <arguments>
+                        <argument>-o</argument>
+                        <argument>${prolo.test.source.dir}</argument>
+                        <argument>-f</argument>
+                        <argument>${descriptor.set.path}/${descriptor.set.file.name}</argument>
+                        <argument>unittest/common/base.proto</argument>
+                        <argument>unittest/all_types.proto</argument>
+                        <argument>unittest/include.proto</argument>
+                        <argument>unittest/person.proto</argument>
+                        <argument>unittest/simple.proto</argument>
+                        <argument>unittest/defaults.proto</argument>
+                    </arguments>
+                    <classpathScope>test</classpathScope>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-prolo-test-sources</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${prolo.test.source.dir}</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

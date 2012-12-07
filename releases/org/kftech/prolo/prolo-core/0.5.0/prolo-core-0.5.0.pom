@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.kftech.prolo</groupId>
+    <artifactId>prolo-core</artifactId>
+    <packaging>jar</packaging>
+    <version>0.5.0</version>
+
+    <name>prolo-core</name>
+    <description>prolo core classes</description>
+
+    <parent>
+        <groupId>org.kftech.prolo</groupId>
+        <artifactId>prolo-parent</artifactId>
+        <version>0.5.0</version>
+    </parent>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.webguys</groupId>
+                <artifactId>string-template-maven-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <templates>
+                        <template>
+                            <directory>src/main/string-template</directory>
+                            <name>primitiveCollection</name>
+                            <target>${project.build.directory}/generated-sources/string-template/org/kftech/prolo/collections/BooleanList.java</target>
+                            <properties>
+                                <primitiveType>boolean</primitiveType>
+                                <typeName>Boolean</typeName>
+                            </properties>
+                        </template>
+                        <template>
+                            <directory>src/main/string-template</directory>
+                            <name>primitiveCollection</name>
+                            <target>${project.build.directory}/generated-sources/string-template/org/kftech/prolo/collections/DoubleList.java</target>
+                            <properties>
+                                <primitiveType>double</primitiveType>
+                                <typeName>Double</typeName>
+                            </properties>
+                        </template>
+                        <template>
+                            <directory>src/main/string-template</directory>
+                            <name>primitiveCollection</name>
+                            <target>${project.build.directory}/generated-sources/string-template/org/kftech/prolo/collections/FloatList.java</target>
+                            <properties>
+                                <primitiveType>float</primitiveType>
+                                <typeName>Float</typeName>
+                            </properties>
+                        </template>
+                        <template>
+                            <directory>src/main/string-template</directory>
+                            <name>primitiveCollection</name>
+                            <target>${project.build.directory}/generated-sources/string-template/org/kftech/prolo/collections/IntList.java</target>
+                            <properties>
+                                <primitiveType>int</primitiveType>
+                                <typeName>Int</typeName>
+                            </properties>
+                        </template>
+                        <template>
+                            <directory>src/main/string-template</directory>
+                            <name>primitiveCollection</name>
+                            <target>${project.build.directory}/generated-sources/string-template/org/kftech/prolo/collections/LongList.java</target>
+                            <properties>
+                                <primitiveType>long</primitiveType>
+                                <typeName>Long</typeName>
+                            </properties>
+                        </template>
+                    </templates>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>render</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
